@@ -1,3 +1,9 @@
 .idea/
 venv/
 model.txt
+__pycache__/
+wordlength-result.txt
+wordlength-model.txt
+stopword-model.txt
+stopword-result.txt
+baseline-result.txt
