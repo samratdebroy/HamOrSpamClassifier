@@ -20,7 +20,6 @@ def experiment2():
     # Get the stopwords
     ham_words = sorted(ham_counter.keys())
     spam_words = sorted(spam_counter.keys())
-    print('ham length:{} spam length:{}'.format(len(ham_counter), len(spam_counter)))
     with open('Data/English-Stop-Words.txt', 'r', encoding='latin-1') as file:
         for stopword in file:
             # Remove stopwords from the counters
@@ -29,7 +28,6 @@ def experiment2():
                 del ham_counter[stopword]
             if stopword in spam_words:
                 del spam_counter[stopword]
-    print('ham length:{} spam length:{}'.format(len(ham_counter), len(spam_counter)))
 
     # Create model of conditional probabilities
     vocab, ham_cond_prob, spam_cond_prob = build_model.create_model(spam_counter, ham_counter,
@@ -50,7 +48,6 @@ def experiment3():
     # Check if the word is the appropriate length
     ham_words = sorted(ham_counter.keys())
     spam_words = sorted(spam_counter.keys())
-    print('ham length:{} spam length:{}'.format(len(ham_counter), len(spam_counter)))
     for word in vocab:
         if len(word) <= 2 or  len(word) >= 9:
             # Remove words of bad length from the counters
@@ -58,8 +55,6 @@ def experiment3():
                 del ham_counter[word]
             if word in spam_words:
                 del spam_counter[word]
-    print('ham length:{} spam length:{}'.format(len(ham_counter), len(spam_counter)))
-
 
     # Create model of conditional probabilities
     vocab, ham_cond_prob, spam_cond_prob = build_model.create_model(spam_counter, ham_counter,
