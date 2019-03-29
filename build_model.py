@@ -75,6 +75,10 @@ def evaluate_model(ham_cond_prob, spam_cond_prob, spam_prob, ham_prob, results_f
     num_ham_files = 400
     num_spam_files = 400
 
+    # counters for correct classification
+    ham_correct = 0
+    spam_correct = 0
+
     # Create and write the Model to file
     with open(results_filename, 'w', encoding='latin-1') as model_file:
 
@@ -84,6 +88,9 @@ def evaluate_model(ham_cond_prob, spam_cond_prob, spam_prob, ham_prob, results_f
             ham_score, spam_score, email_type = classify('Data/test/{}'.format(filename), ham_cond_prob,
                                                          spam_cond_prob, spam_prob, ham_prob)
 
+            if email_type == 'ham':
+                ham_correct += 1
+        
             # Write each line of the model file
             line = '{num}  {name}  {result}  {ham_score}  {spam_score}  {real_type}  {correct}\n'.format(
                 num=ham_file_id, name=filename, result=email_type, ham_score=ham_score, spam_score=spam_score,
@@ -96,11 +103,28 @@ def evaluate_model(ham_cond_prob, spam_cond_prob, spam_prob, ham_prob, results_f
             ham_score, spam_score, email_type = classify('Data/test/{}'.format(filename), ham_cond_prob,
                                                          spam_cond_prob, spam_prob, ham_prob)
 
+            if email_type == 'spam':
+                spam_correct += 1
+
             # Write each line of the model file
             line = '{num}  {name}  {result}  {ham_score}  {spam_score}  {real_type}  {correct}\n'.format(
                 num=spam_file_id + num_ham_files, name=filename, result=email_type, ham_score=ham_score,
                 spam_score=spam_score, real_type='spam',correct=(email_type == 'spam'))
             model_file.write(line)
+
+        # number of incorrectly classified emails
+        ham_incorrect = num_spam_files - spam_correct
+        spam_incorrect = num_ham_files - ham_correct
+
+        total_correct = ham_correct + spam_correct
+
+        accuracy = total_correct / (total_correct + ham_incorrect + spam_incorrect)
+        precision = ham_correct / (ham_correct + ham_incorrect)
+        recall = ham_correct / (ham_correct + spam_incorrect)
+        f_measure = (2 * precision * recall) / (precision + recall)
+
+        print('Error Analysis:\n Accuracy: {}\n Precision: {}\n Recall: {}\n F-Measure: {}\n'.format(
+            accuracy, precision, recall, f_measure))
 
 
 def classify(email_filename, ham_cond_prob, spam_cond_prob, spam_prob, ham_prob):
