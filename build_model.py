@@ -116,16 +116,26 @@ def evaluate_model(ham_cond_prob, spam_cond_prob, spam_prob, ham_prob, results_f
         ham_incorrect = num_spam_files - spam_correct
         spam_incorrect = num_ham_files - ham_correct
 
-        total_correct = ham_correct + spam_correct
+        accuracy = get_accuracy(total_correct=ham_correct+spam_correct, 
+        total_incorrect=ham_incorrect+spam_incorrect)
 
-        accuracy = total_correct / (total_correct + ham_incorrect + spam_incorrect)
-        precision = ham_correct / (ham_correct + ham_incorrect)
-        recall = ham_correct / (ham_correct + spam_incorrect)
-        f_measure = (2 * precision * recall) / (precision + recall)
+        # Ham error analysis
+        ham_precision = get_precision(ham_correct, ham_incorrect)
+        ham_recall = get_recall(ham_correct, spam_incorrect)
+        ham_f_measure = get_f_measure(ham_precision, ham_recall) 
 
-        print('Error Analysis:\n Accuracy: {}\n Precision: {}\n Recall: {}\n F-Measure: {}\n'.format(
-            accuracy, precision, recall, f_measure))
+        print ('Error Analysis')
+        print ('Accuracy: {}'.format(accuracy))
+        print('Ham:\n Ham Correct: {}\n Ham incorrect: {}\n Precision: {}\n Recall: {}\n F-Measure: {}\n'.format(
+            ham_correct, ham_incorrect, ham_precision, ham_recall, ham_f_measure))
 
+        # Spam error analysis
+        spam_precision = get_precision(spam_correct, spam_incorrect)
+        spam_recall = get_recall(spam_correct, ham_incorrect)
+        spam_f_measure = get_f_measure(spam_precision, spam_recall) 
+
+    print('Spam:\n Spam Correct: {}\n Spam incorrect: {}\n Precision: {}\n Recall: {}\n F-Measure: {}\n'.format(
+            spam_correct, spam_incorrect, spam_precision, spam_recall, spam_f_measure))
 
 def classify(email_filename, ham_cond_prob, spam_cond_prob, spam_prob, ham_prob):
     ham_score = math.log10(ham_prob)
@@ -149,3 +159,16 @@ def classify(email_filename, ham_cond_prob, spam_cond_prob, spam_prob, ham_prob)
     else:
         email_type = 'spam'
     return ham_score, spam_score, email_type
+
+
+def get_precision(num_correct, num_incorrect):
+    return num_correct / (num_correct + num_incorrect)
+
+def get_recall(num_correct, num_incorrect_other):
+    return num_correct / (num_correct + num_incorrect_other)
+
+def get_accuracy(total_correct, total_incorrect):
+    return (total_correct) / (total_correct + total_incorrect)
+
+def get_f_measure(precision, recall):
+    return 2 * ((precision * recall) / (precision + recall))
