@@ -53,11 +53,10 @@ def create_model(spam_counter, ham_counter, model_filename = 'model.txt'):
 
     # Do smoothing and build conditional probabilities
     delta = 0.5  # Smoothing amount per unique word
-    smoothed_spam_vocab_size = len(spam_counter)*delta
-    smoothed_ham_vocab_size = len(ham_counter)*delta
+    smoothed_vocab_size = len(vocab)*delta
     for word in vocab:
-        spam_cond_prob[word] = (spam_counter[word] + delta)/(num_spam_words + smoothed_spam_vocab_size)
-        ham_cond_prob[word] = (ham_counter[word] + delta)/(num_ham_words + smoothed_ham_vocab_size)
+        spam_cond_prob[word] = (spam_counter[word] + delta)/(num_spam_words + smoothed_vocab_size)
+        ham_cond_prob[word] = (ham_counter[word] + delta)/(num_ham_words + smoothed_vocab_size)
 
     # Create and write the Model to file
     with open(model_filename, 'w', encoding='latin-1') as model_file:

@@ -66,4 +66,13 @@ def experiment3():
 
 
 if __name__ == '__main__':
+    print("Doing Experiment 1")
+    experiment1()
+
+    print("Doing Experiment 2")
+    experiment2()
+
+    print("Doing Experiment 3")
     experiment3()
+
+    print("Done all experiments")
